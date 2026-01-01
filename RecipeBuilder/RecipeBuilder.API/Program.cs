@@ -1,4 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using RecipeBuilder.API.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Взимаме връзката от appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Казваме на приложението да ползва SQLite с нашия AppDbContext
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(connectionString));
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
