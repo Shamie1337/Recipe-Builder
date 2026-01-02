@@ -3,6 +3,18 @@ using RecipeBuilder.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Разрешаваме на всеки (AllowAnyOrigin) да пита нашето API.
+// В реално приложение тук бихме сложили само адреса на нашия сайт, но за разработка е ОК така.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Взимаме връзката от appsettings.json
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -17,6 +29,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
