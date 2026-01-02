@@ -21,7 +21,7 @@ namespace RecipeBuilder.API.Models
 
         public int? UserId { get; set; }
         
-        [JsonIgnore] // Да не прави безкраен цикъл при зареждане
+        
         public User? User { get; set; }
 
         [JsonIgnore]

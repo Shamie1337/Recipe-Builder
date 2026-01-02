@@ -13,6 +13,8 @@ namespace RecipeBuilder.API.Models
         public string PasswordHash { get; set; } = string.Empty;
 
       
+
+        [JsonIgnore]      
         public List<Recipe> CreatedRecipes { get; set; } = new();
         public List<Recipe> FavoriteRecipes { get; set; } = new();
     }
