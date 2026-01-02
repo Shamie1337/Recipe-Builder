@@ -27,6 +27,21 @@ namespace RecipeBuilder.API.Data
             .HasOne(ri => ri.Ingredient)
             .WithMany(i => i.RecipeIngredients)
             .HasForeignKey(ri => ri.IngredientId);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.FavoriteRecipes)
+                .WithMany(r => r.FavoritedByUsers)
+                .UsingEntity(j => j.ToTable("UserFavorites"));
+
+            modelBuilder.Entity<Recipe>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.CreatedRecipes)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        
+        
         }      
+
+
      }
 }

@@ -16,7 +16,15 @@ namespace RecipeBuilder.API.Models
         public int CookingTimeMinutes { get; set; }
         
         // Списък с необходими продукти
-        
+
         public List<RecipeIngredient> RecipeIngredients { get; set; } = new();
+
+        public int? UserId { get; set; }
+        
+        [JsonIgnore] // Да не прави безкраен цикъл при зареждане
+        public User? User { get; set; }
+
+        [JsonIgnore]
+        public List<User> FavoritedByUsers { get; set; } = new();
     }
-}
+  }

@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "d2Gg2bTDAdI=",
+  "dgSpecHash": "7DdF9y9k0Vw=",
   "success": true,
   "projectFilePath": "/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/RecipeBuilder.API.csproj",
   "expectedPackageFiles": [
+    "/Users/shamie/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/Users/shamie/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/shamie/.nuget/packages/microsoft.aspnetcore.openapi/9.0.10/microsoft.aspnetcore.openapi.9.0.10.nupkg.sha512",
     "/Users/shamie/.nuget/packages/microsoft.bcl.asyncinterfaces/7.0.0/microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",

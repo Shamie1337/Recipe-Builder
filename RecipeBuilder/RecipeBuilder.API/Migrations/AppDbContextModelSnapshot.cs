@@ -30,6 +30,7 @@ namespace RecipeBuilder.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -52,9 +53,15 @@ namespace RecipeBuilder.API.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Recipes");
                 });
@@ -87,6 +94,54 @@ namespace RecipeBuilder.API.Migrations
                     b.ToTable("RecipeIngredients");
                 });
 
+            modelBuilder.Entity("RecipeBuilder.API.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
+                });
+
+            modelBuilder.Entity("RecipeUser", b =>
+                {
+                    b.Property<int>("FavoriteRecipesId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FavoritedByUsersId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("FavoriteRecipesId", "FavoritedByUsersId");
+
+                    b.HasIndex("FavoritedByUsersId");
+
+                    b.ToTable("UserFavorites", (string)null);
+                });
+
+            modelBuilder.Entity("RecipeBuilder.API.Models.Recipe", b =>
+                {
+                    b.HasOne("RecipeBuilder.API.Models.User", "User")
+                        .WithMany("CreatedRecipes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RecipeBuilder.API.Models.RecipeIngredient", b =>
                 {
                     b.HasOne("RecipeBuilder.API.Models.Ingredient", "Ingredient")
@@ -106,6 +161,21 @@ namespace RecipeBuilder.API.Migrations
                     b.Navigation("Recipe");
                 });
 
+            modelBuilder.Entity("RecipeUser", b =>
+                {
+                    b.HasOne("RecipeBuilder.API.Models.Recipe", null)
+                        .WithMany()
+                        .HasForeignKey("FavoriteRecipesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecipeBuilder.API.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("FavoritedByUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("RecipeBuilder.API.Models.Ingredient", b =>
                 {
                     b.Navigation("RecipeIngredients");
@@ -114,6 +184,11 @@ namespace RecipeBuilder.API.Migrations
             modelBuilder.Entity("RecipeBuilder.API.Models.Recipe", b =>
                 {
                     b.Navigation("RecipeIngredients");
+                });
+
+            modelBuilder.Entity("RecipeBuilder.API.Models.User", b =>
+                {
+                    b.Navigation("CreatedRecipes");
                 });
 #pragma warning restore 612, 618
         }

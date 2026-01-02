@@ -143,3 +143,4 @@
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/obj/Debug/net9.0/RecipeBuilder.API.pdb
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/obj/Debug/net9.0/RecipeBuilder.API.genruntimeconfig.cache
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/obj/Debug/net9.0/ref/RecipeBuilder.API.dll
+/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/BCrypt.Net-Next.dll
