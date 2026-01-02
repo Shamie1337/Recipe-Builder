@@ -14,6 +14,8 @@ namespace RecipeBuilder.API.Data
 
         public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
 
+        public DbSet<User> Users { get; set;}
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Конфигуриране на връзката много към много между Recipe и Ingredient чрез RecipeIngredient

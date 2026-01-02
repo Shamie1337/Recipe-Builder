@@ -114,7 +114,7 @@ namespace RecipeBuilder.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("RecipeUser", b =>

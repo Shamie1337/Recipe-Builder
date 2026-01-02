@@ -10,7 +10,7 @@ using RecipeBuilder.API.Data;
 namespace RecipeBuilder.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260102011723_InitialCreate")]
+    [Migration("20260102015619_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -117,7 +117,7 @@ namespace RecipeBuilder.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("RecipeUser", b =>
