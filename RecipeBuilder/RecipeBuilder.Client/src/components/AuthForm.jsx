@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GoogleLogin } from '@react-oauth/google';
 import "./AuthForm.css"; 
 export default function AuthForm({ onLogin }) {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -35,6 +36,29 @@ export default function AuthForm({ onLogin }) {
     .catch((err) => {
       alert("Грешка: " + err.message);
     });
+  };
+
+// --- ЛОГИКА ЗА GOOGLE ---
+  const handleGoogleSuccess = (credentialResponse) => {
+    // Взимаме токена от Google
+    const token = credentialResponse.credential;
+
+    // Пращаме го на нашия Backend за проверка
+    fetch("http://localhost:5182/api/Auth/google-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: token })
+    })
+    .then(async res => {
+        if (!res.ok) throw new Error("Грешка при Google вход");
+        return res.json();
+    })
+    .then(user => {
+        // Успешен вход!
+        alert(`Добре дошъл, ${user.username}!`);
+        onLogin(user);
+    })
+    .catch(err => alert(err.message));
   };
 
   return (
@@ -75,6 +99,15 @@ export default function AuthForm({ onLogin }) {
           {isLoginMode ? "Влез" : "Регистрирай се"}
         </button>
       </form>
+
+      <div className="google-login-container">
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={() => {
+            alert('Грешка при Google вход');
+          }}
+        />
+      </div>
 
       <hr className="auth-divider" />
 
