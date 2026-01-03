@@ -1,0 +1,94 @@
+.recipe-form-container {
+    border: 2px solid #007bff;
+    padding: 20px;
+    border-radius: 8px;
+    background: #f0f8ff;
+    margin-bottom: 30px;
+}
+
+.recipe-form-title {
+    margin-top: 0;
+    color: #0056b3;
+}
+
+.rf-group {
+    margin-bottom: 10px;
+}
+
+.rf-label {
+    display: block;
+    margin-bottom: 3px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.rf-input, .rf-textarea, .rf-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Важно за да не излизат от контейнера */
+}
+
+.rf-textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+.ingredient-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.remove-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-row-btn {
+    margin-bottom: 15px;
+    cursor: pointer;
+    padding: 5px 10px;
+    background-color: #e9ecef;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.submit-btn {
+    flex: 1;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.btn-green { background: #28a745; }
+.btn-orange { background: #ff9800; }
+
+.cancel-btn {
+    background: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}

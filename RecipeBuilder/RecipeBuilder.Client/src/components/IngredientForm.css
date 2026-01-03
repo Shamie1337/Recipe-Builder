@@ -1,0 +1,88 @@
+.ingredient-container {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background: #fff;
+    margin-bottom: 20px;
+}
+
+.ing-title {
+    margin-top: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-btn {
+    cursor: pointer;
+    background: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0 15px;
+}
+
+.results-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px 0;
+    border: 1px solid #eee;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.result-item {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.result-item:hover {
+    background-color: #f0f0f0;
+}
+
+.small-img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.add-manual-form {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 12px;
+    color: #666;
+}
+
+.save-ing-btn {
+    padding: 7px 15px;
+    background: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}

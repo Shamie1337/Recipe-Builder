@@ -1,25 +1,37 @@
 import { useState, useEffect } from "react";
+import "./RecipeForm.css";
 
-
-export default function RecipeForm({ onRecipeCreated, refreshTrigger }) {
+export default function RecipeForm({ onRecipeCreated, refreshTrigger, currentUser, recipeToEdit, onCancelEdit }) {
   const [allIngredients, setAllIngredients] = useState([]);
   
-  const [title, setTitle] = useState("");
-  const [instructions, setInstructions] = useState("");
-  const [cookingTime, setCookingTime] = useState(30);
   
-  const [selectedIngredients, setSelectedIngredients] = useState([
-    { ingredientId: "", quantity: 100, unit: "g" }
-  ]);
+
+  const [title, setTitle] = useState(recipeToEdit ? recipeToEdit.title : "");
+  
+ 
+  const [instructions, setInstructions] = useState(recipeToEdit ? (recipeToEdit.instructions || "") : ""); 
+  const [cookingTime, setCookingTime] = useState(recipeToEdit ? recipeToEdit.cookingTimeMinutes : 30);
+  
+  // Логика за съставките при старт
+  const [selectedIngredients, setSelectedIngredients] = useState(() => {
+    if (recipeToEdit && recipeToEdit.recipeIngredients && recipeToEdit.recipeIngredients.length > 0) {
+      return recipeToEdit.recipeIngredients.map(i => ({
+        ingredientId: i.ingredientId,
+        quantity: i.quantity,
+        unit: i.unit
+      }));
+    }
+    return [{ ingredientId: "", quantity: 100, unit: "g" }];
+  });
 
   
-  
   useEffect(() => {
-    fetch("http://localhost:5182/api/Ingredients") // Провери порта!
+    fetch("http://localhost:5182/api/Ingredients") 
       .then((res) => res.json())
       .then((data) => setAllIngredients(data))
       .catch((err) => console.error(err));
   }, [refreshTrigger]); 
+
 
   const addIngredientRow = () => {
     setSelectedIngredients([
@@ -34,13 +46,24 @@ export default function RecipeForm({ onRecipeCreated, refreshTrigger }) {
     setSelectedIngredients(updatedIngredients);
   };
 
+  const removeIngredientRow = (index) => {
+    const updatedIngredients = selectedIngredients.filter((_, i) => i !== index);
+    setSelectedIngredients(updatedIngredients);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newRecipe = {
+    if (!currentUser) {
+      alert("Моля, влезте в профила си!");
+      return;
+    }
+
+    const recipeData = {
       title,
-      instructions,
+      instructions: instructions,
       cookingTimeMinutes: parseInt(cookingTime),
+      userId: currentUser.id,
       recipeIngredients: selectedIngredients
         .filter(i => i.ingredientId)
         .map(i => ({
@@ -50,69 +73,83 @@ export default function RecipeForm({ onRecipeCreated, refreshTrigger }) {
         }))
     };
 
-    fetch("http://localhost:5182/api/Recipes", {
-      method: "POST",
+    if (recipeToEdit) {
+      recipeData.id = recipeToEdit.id;
+    }
+
+    const url = recipeToEdit 
+      ? `http://localhost:5182/api/Recipes/${recipeToEdit.id}?userId=${currentUser.id}`
+      : "http://localhost:5182/api/Recipes";
+
+    const method = recipeToEdit ? "PUT" : "POST";
+
+    fetch(url, {
+      method: method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newRecipe)
+      body: JSON.stringify(recipeData)
     })
     .then(res => {
-      if (!res.ok) throw new Error("Грешка при запис!");
-      return res.json();
+      if (!res.ok) {
+         return res.text().then(text => { throw new Error(text) });
+      }
+      if (res.status !== 204) return res.json(); 
+      return {};
     })
     .then(() => {
-      alert("Рецептата е създадена успешно! 🎉");
-      setTitle("");
-      setInstructions("");
-      setSelectedIngredients([{ ingredientId: "", quantity: 100, unit: "g" }]);
+      alert(recipeToEdit ? "Рецептата е обновена успешно!" : "Рецептата е създадена успешно! 🎉");
+      // Няма нужда да чистим state-а ръчно, App.jsx ще го направи
       if(onRecipeCreated) onRecipeCreated();
     })
     .catch(err => alert(err.message));
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ border: "2px solid #007bff", padding: "20px", borderRadius: "8px", background: "#f0f8ff", marginBottom: "30px" }}>
-      <h2 style={{marginTop: 0}}>➕ Нова Рецепта</h2>
+    <form onSubmit={handleSubmit} className="recipe-form-container">
+      <h2 className="recipe-form-title">
+        {recipeToEdit ? "✏️ Редактирай Рецепта" : "➕ Нова Рецепта"}
+      </h2>
       
-      <div style={{ marginBottom: "10px" }}>
-        <label>Заглавие:</label><br/>
+      <div className="rf-group">
+        <label className="rf-label">Заглавие:</label>
         <input 
+          className="rf-input"
           type="text" 
           value={title} 
           onChange={e => setTitle(e.target.value)} 
           required 
-          style={{ width: "100%", padding: "5px" }}
         />
       </div>
 
-      <div style={{ marginBottom: "10px" }}>
-        <label>Инструкции:</label><br/>
+      <div className="rf-group">
+        <label className="rf-label">Инструкции:</label>
         <textarea 
+          className="rf-textarea"
           value={instructions} 
           onChange={e => setInstructions(e.target.value)} 
           required 
-          style={{ width: "100%", height: "60px", padding: "5px" }}
         />
       </div>
 
-      <div style={{ marginBottom: "10px" }}>
-        <label>Време (мин):</label>
+      <div className="rf-group">
+        <label className="rf-label">Време (мин):</label>
         <input 
+          className="rf-input"
+          style={{width: '100px'}}
           type="number" 
           value={cookingTime} 
           onChange={e => setCookingTime(e.target.value)} 
-          style={{ marginLeft: "10px", width: "60px" }}
         />
       </div>
 
       <h3>Съставки:</h3>
       {selectedIngredients.map((row, index) => (
-        <div key={index} style={{ display: "flex", gap: "10px", marginBottom: "5px" }}>
+        <div key={index} className="ingredient-row">
           
           <select 
+            className="rf-select"
             value={row.ingredientId} 
             onChange={e => handleIngredientChange(index, 'ingredientId', e.target.value)}
-            required
-            style={{flex: 1}}
+            style={{flex: 2}}
           >
             <option value="">-- Избери продукт --</option>
             {allIngredients.map(ing => (
@@ -121,31 +158,48 @@ export default function RecipeForm({ onRecipeCreated, refreshTrigger }) {
           </select>
 
           <input 
+            className="rf-input"
             type="number" 
             placeholder="Кол." 
             value={row.quantity} 
             onChange={e => handleIngredientChange(index, 'quantity', e.target.value)}
-            style={{ width: "70px" }}
+            style={{ width: "80px" }}
           />
           
           <input 
+            className="rf-input"
             type="text" 
             placeholder="Ед." 
             value={row.unit} 
             onChange={e => handleIngredientChange(index, 'unit', e.target.value)}
-            style={{ width: "50px" }}
+            style={{ width: "60px" }}
           />
+
+          <button 
+            type="button" 
+            className="remove-btn"
+            onClick={() => removeIngredientRow(index)}
+          >
+            X
+          </button>
         </div>
       ))}
 
-      <button type="button" onClick={addIngredientRow} style={{ marginBottom: "15px", cursor: "pointer" }}>
+      <button type="button" onClick={addIngredientRow} className="add-row-btn">
         + Още един продукт
       </button>
-      <br />
       
-      <button type="submit" style={{ background: "green", color: "white", padding: "10px 20px", border: "none", cursor: "pointer", fontSize: "16px" }}>
-        💾 Запази Рецептата
-      </button>
+      <div className="form-actions">
+        <button type="submit" className={`submit-btn ${recipeToEdit ? 'btn-orange' : 'btn-green'}`}>
+            {recipeToEdit ? "💾 Запази Промените" : "💾 Запази Рецептата"}
+        </button>
+
+        {recipeToEdit && (
+            <button type="button" onClick={onCancelEdit} className="cancel-btn">
+                Отказ
+            </button>
+        )}
+      </div>
     </form>
   );
 }

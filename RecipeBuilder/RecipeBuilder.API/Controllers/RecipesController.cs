@@ -37,10 +37,7 @@ namespace RecipeBuilder.API.Controllers
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
-            if (recipe == null)
-            {
-                return NotFound();
-            }
+            if (recipe == null) return NotFound();
 
             return recipe;
         }
@@ -49,27 +46,28 @@ namespace RecipeBuilder.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Recipe>> PostRecipe(Recipe recipe)
         {
-            recipe.Id = 0; 
-            
             _context.Recipes.Add(recipe);
             await _context.SaveChangesAsync();
+
+           if (recipe.UserId != null)
+            {
+                await _context.Entry(recipe).Reference(r => r.User).LoadAsync();
+            }
 
             return CreatedAtAction(nameof(GetRecipe), new { id = recipe.Id }, recipe);
         }
 
-        // DELETE: api/Recipes/5?userId=1
+        // DELETE: api/Recipes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRecipe(int id, [FromQuery] int userId)
         {
             var recipe = await _context.Recipes.FindAsync(id);
+            if (recipe == null) return NotFound("Рецептата не е намерена.");
 
-            if (recipe == null)
-            {
-                return NotFound("Рецептата не е намерена.");
-            }
+            // Проверка за nullable UserId
             if (recipe.UserId != userId)
             {
-                return StatusCode(403, "Нямате право да триете тази рецепта, защото не сте нейният автор!");
+                return StatusCode(403, "Нямате право да триете тази рецепта!");
             }
 
             _context.Recipes.Remove(recipe);
@@ -78,114 +76,92 @@ namespace RecipeBuilder.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Recipes/5/favorite?userId=1
+        // PUT: api/Recipes/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRecipe(int id, Recipe recipeUpdate, [FromQuery] int userId)
+        {
+            if (id != recipeUpdate.Id) return BadRequest();
+
+            var existingRecipe = await _context.Recipes
+                .Include(r => r.RecipeIngredients)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (existingRecipe == null) return NotFound();
+
+            if (existingRecipe.UserId != userId)
+            {
+                return StatusCode(403, "Нямате право да редактирате тази рецепта!");
+            }
+
+            // Обновяваме с ТВОИТЕ полета
+            existingRecipe.Title = recipeUpdate.Title;
+            existingRecipe.Instructions = recipeUpdate.Instructions; 
+            existingRecipe.CookingTimeMinutes = recipeUpdate.CookingTimeMinutes;
+
+            // Обновяване на съставките
+            existingRecipe.RecipeIngredients.Clear();
+            foreach (var item in recipeUpdate.RecipeIngredients)
+            {
+                existingRecipe.RecipeIngredients.Add(item);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                // Зареждаме автора отново за Front-end-а
+                await _context.Entry(existingRecipe).Reference(r => r.User).LoadAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Recipes.Any(e => e.Id == id)) return NotFound();
+                else throw;
+            }
+
+            return Ok(existingRecipe);
+        }
+
+        // POST: api/Recipes/5/favorite
         [HttpPost("{id}/favorite")]
         public async Task<IActionResult> ToggleFavorite(int id, [FromQuery] int userId)
         {
-            // 1. Зареждаме потребителя с неговите любими рецепти
             var user = await _context.Users
                 .Include(u => u.FavoriteRecipes)
                 .FirstOrDefaultAsync(u => u.Id == userId);
-
-            // 2. Проверяваме дали рецептата изобщо съществува в базата
+            
             var recipe = await _context.Recipes.FindAsync(id);
 
-            if (recipe == null || user == null) 
-                return NotFound("Рецептата или потребителят не са намерени.");
+            if (recipe == null || user == null) return NotFound();
 
-            // 3. Не можеш да харесваш собствената си рецепта
             if (recipe.UserId == userId)
-            {
                 return BadRequest("Не можеш да добавяш свои рецепти в любими!");
-            }
 
-            // 4. Проверка дали вече е в любими
-            var existingFavorite = user.FavoriteRecipes.FirstOrDefault(r => r.Id == id);
-
-            if (existingFavorite != null)
+            var existing = user.FavoriteRecipes.FirstOrDefault(r => r.Id == id);
+            
+            if (existing != null)
             {
-                // ВЕЧЕ Е ЛЮБИМА -> ПРЕМАХВАМЕ
-                // Премахваме конкретната инстанция от списъка на потребителя
-                user.FavoriteRecipes.Remove(existingFavorite);
+                user.FavoriteRecipes.Remove(existing);
                 await _context.SaveChangesAsync();
                 return Ok("Рецептата е премахната от любими.");
             }
             else
             {
-                // НЕ Е ЛЮБИМА -> ДОБАВЯМЕ
                 user.FavoriteRecipes.Add(recipe);
                 await _context.SaveChangesAsync();
                 return Ok("Рецептата е добавена в любими! ❤️");
             }
         }
 
-        // GET: api/Recipes/my-favorites?userId=1
         [HttpGet("my-favorites")]
         public async Task<ActionResult<IEnumerable<Recipe>>> GetMyFavorites([FromQuery] int userId)
         {
             var user = await _context.Users
                 .Include(u => u.FavoriteRecipes)
-                    .ThenInclude(r => r.User) // За да видим автора на любимата рецепта
-                .Include(u => u.FavoriteRecipes)
-                    .ThenInclude(r => r.RecipeIngredients) // За да видим съставките
+                .ThenInclude(r => r.User)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (user == null) return NotFound("Потребителят не е намерен.");
+            if (user == null) return NotFound();
 
             return Ok(user.FavoriteRecipes);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRecipe(int id, Recipe recipeUpdate, [FromQuery] int userId)
-        {
-            // Проверка дали ID-то в URL-а съвпада с ID-то в обекта
-            if (id != recipeUpdate.Id)
-            {
-                return BadRequest("ID-то на рецептата не съвпада.");
-            }
-
-            // 1. Намираме съществуващата рецепта в базата
-            var existingRecipe = await _context.Recipes.FindAsync(id);
-
-            if (existingRecipe == null)
-            {
-                return NotFound("Рецептата не е намерена.");
-            }
-
-            // 2. ЗАЩИТА: Проверяваме дали текущият потребител е собственикът
-            if (existingRecipe.UserId != userId)
-            {
-                return StatusCode(403, "Нямате право да редактирате тази рецепта, защото не сте нейният автор!");
-            }
-
-            // 3. Обновяваме само нужните полета
-            // ВАЖНО: Не обновяваме директно целия обект, за да не счупим UserId или Id
-            existingRecipe.Title = recipeUpdate.Title;
-            existingRecipe.Instructions = recipeUpdate.Instructions;
-            existingRecipe.CookingTimeMinutes = recipeUpdate.CookingTimeMinutes;
-          
-            
-            // (Забележка: Обновяването на списъка със съставки (Ingredients) е по-сложно 
-            // и обикновено изисква изтриване на старите и добавяне на новите, 
-            // но засега ще обновим само основната информация).
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if ((id != existingRecipe.Id) || (userId != existingRecipe.UserId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent(); // 204 No Content е стандартен отговор при успешна редакция
         }
     }
 }

@@ -1,0 +1,179 @@
+.app-container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+.welcome-msg {
+    margin: 0;
+    margin-right: 20px;
+}
+
+.logout-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nav-tabs {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background: #e9ecef;
+    color: black;
+}
+
+.tab-btn.active {
+    background: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.tab-btn.active-fav {
+    background: #ffc107;
+    color: black;
+    font-weight: bold;
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.collection-info {
+    padding: 20px;
+    background: #fff3cd;
+    border-radius: 8px;
+    border: 1px solid #ffeeba;
+    height: fit-content;
+}
+
+.recipe-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.recipe-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    background: #f9f9f9;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+}
+
+.card-author {
+    font-size: 11px;
+    color: #666;
+    margin: 0 0 5px 0;
+}
+
+.card-instructions {
+    font-size: 13px;
+    color: #333;
+    margin: 5px 0;
+    /* Ограничаване на текста */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-meta {
+    font-size: 12px;
+    color: #555;
+}
+
+.card-actions {
+    display: flex;
+    gap: 5px;
+    margin-top: auto; /* Бутоните да са долу */
+    flex-wrap: wrap;
+    padding-top: 10px;
+}
+
+.btn {
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-blue { background: #007bff; color: white; flex: 1; }
+.btn-orange { background: #ff9800; color: white; }
+.btn-red { background: #dc3545; color: white; }
+.btn-yellow { background: #ffc107; color: black; }
+.btn-yellow-dark { background: #ffcd39; color: black; }
+
+.shopping-list {
+    border: 2px solid #28a745;
+    padding: 15px;
+    border-radius: 8px;
+    background: #eaffea;
+    position: sticky;
+    top: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.sl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.sl-close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #666;
+}
+
+.sl-btn {
+    width: 100%;
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
