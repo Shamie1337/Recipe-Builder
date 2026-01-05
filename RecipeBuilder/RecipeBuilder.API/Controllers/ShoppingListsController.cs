@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecipeBuilder.API.Data;
-using RecipeBuilder.API.DTOs; // Не забравяй да импортнеш DTO-то
+using RecipeBuilder.API.DTOs; 
 using RecipeBuilder.API.Models;
 
 namespace RecipeBuilder.API.Controllers
@@ -21,10 +21,10 @@ namespace RecipeBuilder.API.Controllers
         [HttpGet("from-recipe/{recipeId}")]
         public async Task<ActionResult<ShoppingListResponseDto>> GenerateFromRecipe(int recipeId)
         {
-            // 1. Извличаме рецептата, но ВКЛЮЧВАМЕ (Include) свързаните данни
+            
             var recipe = await _context.Recipes
-                .Include(r => r.RecipeIngredients) // Зареди връзката
-                    .ThenInclude(ri => ri.Ingredient) // Зареди и самия продукт (за името и цената)
+                .Include(r => r.RecipeIngredients) 
+                    .ThenInclude(ri => ri.Ingredient) 
                 .FirstOrDefaultAsync(r => r.Id == recipeId);
 
             if (recipe == null)
@@ -32,8 +32,7 @@ namespace RecipeBuilder.API.Controllers
                 return NotFound("Рецептата не е намерена.");
             }
 
-            // 2. Мапване (Прехвърляне) на данните към DTO
-            // Тук превръщаме сложните DB данни в прост списък за пазаруване
+            // 2. Създаване на ShoppingListResponseDto с изчислени цени
             var response = new ShoppingListResponseDto
             {
                 RecipeName = recipe.Title,
@@ -42,13 +41,16 @@ namespace RecipeBuilder.API.Controllers
                     Name = ri.Ingredient.Name,
                     Quantity = ri.Quantity,
                     Unit = ri.Unit,
-                    // Примерна логика за цена: (ако цената в базата е за 1 кг/бр, трябва да се сметне)
-                    // За по-просто в момента взимаме базовата цена на продукта
-                    EstimatedPrice = ri.Ingredient.EstPrice 
+                    
+                    // БИЗНЕС ЛОГИКА ЗА ЦЕНАТА:
+                    // Проверяваме мерната единица и смятаме реалната цена
+                    EstimatedPrice = (ri.Unit == "g" || ri.Unit == "ml")
+                        ? (ri.Ingredient.EstPrice / 1000) * ri.Quantity // Ако е грамове -> делим на 1000
+                        : ri.Ingredient.EstPrice * ri.Quantity          // Ако е кг/бр -> умножаваме директно
                 }).ToList()
             };
 
-            // 3. Изчисляване на общата сума
+            // 3. Изчисляване на общата сума (сумираме вече изчислените цени)
             response.TotalPrice = response.Items.Sum(i => i.EstimatedPrice);
 
             return Ok(response);

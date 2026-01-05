@@ -6,6 +6,10 @@
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/RecipeBuilder.API.runtimeconfig.json
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/RecipeBuilder.API.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/RecipeBuilder.API.pdb
+/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/BCrypt.Net-Next.dll
+/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Google.Apis.dll
+/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Google.Apis.Auth.dll
+/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Google.Apis.Core.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Humanizer.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Microsoft.AspNetCore.OpenApi.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Microsoft.Bcl.AsyncInterfaces.dll
@@ -25,6 +29,7 @@
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Microsoft.Extensions.DependencyModel.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Microsoft.OpenApi.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Mono.TextTemplating.dll
+/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Newtonsoft.Json.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/SQLitePCLRaw.batteries_v2.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/SQLitePCLRaw.core.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/SQLitePCLRaw.provider.e_sqlite3.dll
@@ -34,6 +39,7 @@
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/System.Composition.Hosting.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/System.Composition.Runtime.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/System.Composition.TypedParts.dll
+/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/System.Management.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/cs/Microsoft.CodeAnalysis.resources.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/de/Microsoft.CodeAnalysis.resources.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/es/Microsoft.CodeAnalysis.resources.dll
@@ -120,6 +126,7 @@
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/runtimes/win-arm64/native/e_sqlite3.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/runtimes/win-x64/native/e_sqlite3.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/runtimes/win-x86/native/e_sqlite3.dll
+/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/runtimes/win/lib/net7.0/System.Management.dll
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/obj/Debug/net9.0/RecipeBuilder.API.csproj.AssemblyReference.cache
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/obj/Debug/net9.0/rpswa.dswa.cache.json
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/obj/Debug/net9.0/RecipeBuilder.API.GeneratedMSBuildEditorConfig.editorconfig
@@ -143,10 +150,3 @@
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/obj/Debug/net9.0/RecipeBuilder.API.pdb
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/obj/Debug/net9.0/RecipeBuilder.API.genruntimeconfig.cache
 /Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/obj/Debug/net9.0/ref/RecipeBuilder.API.dll
-/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/BCrypt.Net-Next.dll
-/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Google.Apis.dll
-/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Google.Apis.Auth.dll
-/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Google.Apis.Core.dll
-/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/Newtonsoft.Json.dll
-/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/System.Management.dll
-/Users/shamie/Desktop/ПИ/RecipeBuilder/RecipeBuilder.API/bin/Debug/net9.0/runtimes/win/lib/net7.0/System.Management.dll

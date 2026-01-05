@@ -14,6 +14,11 @@ namespace RecipeBuilder.API.Models
         public string? Barcode { get; set; }
         [Range(0.01, 1000, ErrorMessage = "Цената трябва да е положително число.")]
         public decimal EstPrice { get; set; }
+
+        public double CaloriesPer100g { get; set; } // Калории (kcal)
+        public double ProteinsPer100g { get; set; } // Протеини
+        public double CarbsPer100g { get; set; }    // Въглехидрати
+        public double FatsPer100g { get; set; }     // Мазнини
         
         // Списък с рецепти, в които участва
         [JsonIgnore]

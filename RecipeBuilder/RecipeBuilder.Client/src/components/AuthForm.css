@@ -1,17 +1,20 @@
 .auth-container {
     max-width: 400px;
-    margin: 50px auto;
-    padding: 30px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin: 80px auto;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f1f5f9;
     text-align: center;
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .auth-title {
-    color: #333;
-    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8rem;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
 }
 
 .auth-form {
@@ -21,47 +24,72 @@
 }
 
 .auth-input {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .auth-button {
     padding: 12px;
-    font-size: 16px;
-    background: #007bff;
+    font-size: 1rem;
+    font-weight: 600;
+    background: #3b82f6;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.2s;
 }
 
 .auth-button:hover {
-    background: #0056b3;
+    background: #2563eb;
 }
 
 .auth-divider {
-    margin: 20px 0;
+    margin: 25px 0;
     border: 0;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #e2e8f0;
 }
 
 .auth-switch-text {
-    color: #666;
+    color: #64748b;
+    font-size: 0.9rem;
 }
 
 .auth-switch-btn {
     background: none;
     border: none;
-    color: #007bff;
-    text-decoration: underline;
+    color: #3b82f6;
+    font-weight: 600;
+    text-decoration: none;
     cursor: pointer;
     margin-left: 5px;
-    font-size: 14px;
+    font-size: 0.9rem;
 }
 
-.google-login-container {
-    margin-top: 20px;
+.auth-switch-btn:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        margin: 20px auto;
+        padding: 20px;
+        width: 90%;
+        max-width: 100%;
+    }
+
+    .auth-title {
+        font-size: 1.5rem;
+    }
 }

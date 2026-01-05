@@ -13,6 +13,8 @@ namespace RecipeBuilder.API.Models
         public string PasswordHash { get; set; } = string.Empty;
 
       
+      public string? VerificationCode { get; set; }
+      public bool IsVerified { get; set; } = false;
 
         [JsonIgnore]      
         public List<Recipe> CreatedRecipes { get; set; } = new();

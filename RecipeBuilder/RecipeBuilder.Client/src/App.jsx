@@ -2,8 +2,20 @@ import { useState, useEffect } from 'react'
 import RecipeForm from './components/RecipeForm';
 import IngredientForm from './components/IngredientForm';
 import AuthForm from './components/AuthForm';
+import RecipeDetailsModal from './components/RecipeDetailsModal'; // <--- НОВО
 import "./App.css";
 
+// --- Логика за цената ---
+const calculateRealPrice = (basePrice, quantity, unit) => {
+  if (!basePrice || !quantity) return 0;
+  const price = parseFloat(basePrice);
+  const qty = parseFloat(quantity);
+
+  if (unit === "g" || unit === "ml") {
+      return (price / 1000) * qty;
+  }
+  return price * qty;
+};
 
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -17,7 +29,9 @@ function App() {
   const [ingredientsRefreshTrigger, setIngredientsRefreshTrigger] = useState(0);
   const [view, setView] = useState("all"); 
 
-  // --- API ---
+  
+  const [selectedRecipeDetails, setSelectedRecipeDetails] = useState(null);
+
   const fetchAllRecipes = () => {
     fetch('http://localhost:5182/api/Recipes')
       .then(res => res.json())
@@ -51,6 +65,27 @@ function App() {
     setShoppingList(null);
     setView("all"); 
     setRecipeToEdit(null);
+  };
+
+  const handleDeleteAccount = () => {
+    const confirmDelete = window.confirm(
+        "ВНИМАНИЕ: Сигурни ли сте, че искате да изтриете профила си?\n\nТова ще изтрие всички ваши рецепти и данни безвъзвратно!"
+    );
+
+    if (!confirmDelete) return;
+
+    fetch(`http://localhost:5182/api/Auth/${currentUser.id}`, {
+        method: 'DELETE'
+    })
+    .then(res => {
+        if (res.ok) {
+            alert("Профилът ви беше изтрит успешно.");
+            handleLogout(); 
+        } else {
+            alert("Възникна грешка при изтриването.");
+        }
+    })
+    .catch(err => console.error(err));
   };
 
   const fetchShoppingList = (recipeId) => {
@@ -98,9 +133,11 @@ function App() {
 
   if (!currentUser) {
     return (
-      <div className="app-container">
-        <h1 style={{ textAlign: "center", marginTop: "50px" }}>👨‍🍳 Recipe Builder</h1>
-        <AuthForm onLogin={handleLogin} />
+      <div className="app-container" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+         <div style={{width: '100%'}}>
+            <h1 style={{ textAlign: "center", marginBottom: "30px", fontSize: "2.5rem" }}>👨‍🍳 Recipe Builder</h1>
+            <AuthForm onLogin={handleLogin} />
+         </div>
       </div>
     );
   }
@@ -111,7 +148,18 @@ function App() {
       {/* HEADER */}
       <div className="header">
         <h1 className="welcome-msg">👨‍🍳 Здравей, {currentUser.username}!</h1>
-        <button onClick={handleLogout} className="logout-btn">🚪 Изход</button>
+        
+        <div style={{ display: 'flex', gap: '10px' }}>
+            <button 
+                onClick={handleDeleteAccount} 
+                className="delete-account-btn"
+                title="Изтрий профила си завинаги"
+            >
+                🗑️ Изтрий Профил
+            </button>
+
+            <button onClick={handleLogout} className="logout-btn">🚪 Изход</button>
+        </div>
       </div>
 
       {/* NAV */}
@@ -136,11 +184,9 @@ function App() {
         {view === "all" ? (
             <div className="left-column">
                 <IngredientForm onIngredientAdded={() => setIngredientsRefreshTrigger(prev => prev + 1)} />
+                
                 <RecipeForm 
-
-                //React key trick to reset internal state when switching between edit/new --- IGNORE ---
-                key={recipeToEdit ? recipeToEdit.id : 'new'}
-
+                    key={recipeToEdit ? recipeToEdit.id : 'new'}
                     onRecipeCreated={handleFormSuccess} 
                     refreshTrigger={ingredientsRefreshTrigger} 
                     currentUser={currentUser} 
@@ -149,9 +195,9 @@ function App() {
                 />
             </div>
         ) : (
-            <div className="collection-info">
-                <h3>👋 Твоята колекция</h3>
-                <p>Тук са рецептите, които си харесал от други потребители.</p>
+            <div className="collection-info" style={{ padding: '20px', background: '#fffbeb', borderRadius: '12px', border: '1px solid #fcd34d' }}>
+                <h3 style={{marginTop: 0, color: '#b45309'}}>👋 Твоята колекция</h3>
+                <p style={{marginBottom: 0, color: '#78350f'}}>Тук са рецептите, които си харесал и искаш да сготвиш по-късно.</p>
             </div>
         )}
 
@@ -163,14 +209,11 @@ function App() {
               
               <div className="recipe-grid">
                 {recipes.map(recipe => {
-                    // АГРЕСИВНА ЛОГИКА ЗА ID (Fix за бутоните)
                     let authorId = recipe.userId || recipe.UserId;
                     if (!authorId && recipe.user) authorId = recipe.user.id;
                     if (!authorId && recipe.User) authorId = recipe.User.Id;
 
-                    // Сравняваме като текст, за да избегнем number vs string бъгове
                     const isOwner = String(authorId) === String(currentUser.id);
-                    
                     const authorName = recipe.user?.username || recipe.User?.Username || "Анонимен";
 
                     return (
@@ -178,13 +221,22 @@ function App() {
                         <h3 className="card-title">{recipe.title}</h3>
                         <p className="card-author">👤 Автор: <strong>{authorName}</strong></p>
                         
-                        {/* Използваме instructions, не description */}
                         <p className="card-instructions">{recipe.instructions}</p>
                         
-                        <p className="card-meta">⏳ {recipe.cookingTimeMinutes} мин.</p>
+                        <div className="card-meta">⏳ {recipe.cookingTimeMinutes} мин.</div>
                         
                         <div className="card-actions">
                           <button onClick={() => fetchShoppingList(recipe.id)} className="btn btn-blue">🛒 Списък</button>
+                          
+                          {/* --- НОВО: Бутон за детайли --- */}
+                          <button 
+                                onClick={() => setSelectedRecipeDetails(recipe)} 
+                                className="btn" 
+                                style={{background: '#8b5cf6', color: 'white'}}
+                                title="Виж нутриенти и инструкции"
+                            >
+                                ℹ️ Инфо
+                          </button>
 
                           {view === "all" && isOwner && (
                             <>
@@ -212,20 +264,41 @@ function App() {
              <div className="shopping-list">
                 <div className="sl-header">
                     <h3 style={{ marginTop: 0 }}>🛒 {shoppingList.recipeName}</h3>
-                    <button onClick={() => setShoppingList(null)} className="sl-close">✖️</button>
+                    <button onClick={() => setShoppingList(null)} className="sl-close">✖</button>
                 </div>
-                <ul style={{ paddingLeft: "20px" }}>
-                  {shoppingList.items.map((item, index) => (
-                    <li key={index} style={{ marginBottom: "5px" }}>
-                      <input type="checkbox" style={{ marginRight: "8px" }} /> {item.name} — <b>{item.quantity} {item.unit}</b>
-                    </li>
-                  ))}
+                <ul>
+                  {shoppingList.items.map((item, index) => {
+                    const itemPrice = calculateRealPrice(item.estPrice, item.quantity, item.unit);
+                    return (
+                        <li key={index}>
+                          <div style={{display:'flex', alignItems:'center'}}>
+                            <input type="checkbox" style={{ marginRight: "10px", width: "18px", height: "18px" }} /> 
+                            <span>{item.name} — <b>{item.quantity} {item.unit}</b></span>
+                          </div>
+                          
+                          {itemPrice > 0 && (
+                              <span style={{color: "#10b981", fontWeight: "bold", marginLeft: 'auto'}}>
+                                  {itemPrice.toFixed(2)} лв.
+                              </span>
+                          )}
+                        </li>
+                    );
+                  })}
                 </ul>
-                <hr style={{ borderColor: "#28a745", opacity: 0.3 }} />
-                <h3 style={{ textAlign: "right", margin: "10px 0 15px 0" }}>Общо: {shoppingList.totalPrice.toFixed(2)} лв.</h3>
-                <button onClick={() => setShoppingList(null)} className="sl-btn">✅ Готово / Изчисти</button>
+                <div style={{borderTop: '1px dashed #ccc', marginTop: '15px', paddingTop: '10px'}}></div>
+                <h3 style={{ textAlign: "right", margin: "10px 0 15px 0", color: "#059669" }}>Общо: {shoppingList.totalPrice.toFixed(2)} лв.</h3>
+                <button onClick={() => setShoppingList(null)} className="sl-btn">✅ Готово</button>
              </div>
            )}
+
+           {/* --- НОВО: Модален прозорец за детайли (показва се само ако има избрана рецепта) --- */}
+           {selectedRecipeDetails && (
+              <RecipeDetailsModal 
+                  recipe={selectedRecipeDetails} 
+                  onClose={() => setSelectedRecipeDetails(null)} 
+              />
+           )}
+
         </div>
       </div>
     </div>
